@@ -14,3 +14,6 @@ Implemented turn counting and automated evaluation logic to generate structured 
 
 ## Prompt 5: Next.js Frontend Integration
 Scaffolding a Next.js App Router project with a modern chat interface, session state management, and real-time feedback scorecard rendering.
+
+## Prompt 6: Production API URL Configuration & CORS Alignment
+Configured frontend environment variable and API fetch endpoint in `page.tsx` to target the deployed live Render backend (`https://interview-agent-api.onrender.com/api/interview`), enabling production deployment on Vercel.

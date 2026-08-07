@@ -26,6 +26,8 @@ type Feedback = {
   next: string[];
 };
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://interview-agent-api.onrender.com/api/interview";
+
 export default function InterviewApp() {
   const [candidates] = useState(candidatesData.candidates);
   const [selectedCandidateId, setSelectedCandidateId] = useState<string>(candidates[0]?.member.id || "");
@@ -58,7 +60,7 @@ export default function InterviewApp() {
     const selectedCandidate = candidates.find((c: any) => c.member.id === selectedCandidateId);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/interview", {
+      const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -96,7 +98,7 @@ export default function InterviewApp() {
     setIsLoading(true);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/interview", {
+      const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
