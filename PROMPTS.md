@@ -1,16 +1,16 @@
 # AI Usage Log & Prompt History
 
 ## Prompt 1: Initial Repository & API Scaffold
-Created the base project structure and FastAPI backend with `/api/interview` endpoint.
+Created base FastAPI project structure with `/api/interview` endpoint handling initial session payloads and follow-up candidate messages.
 
-## Prompt 2: Data Parsing and Context Generation
-Wrote a utility script to load candidates.json and curriculum.json, cross-referencing a candidate's progress to build an LLM context string.
+## Prompt 2: Data Integration & Context Parsing
+Wrote `data_manager.py` to parse `candidates.json` and `curriculum.json`, creating a candidate profile summary for the system prompt.
 
-## Prompt 3: Interviewer LLM Engine Integration
-Integrated Groq API using the OpenAI SDK format to drive the multi-turn interviewer agent logic and session management.
+## Prompt 3: Interviewer Agent Engine
+Integrated Groq API with Llama 3.3 70B to power dynamic, multi-turn technical interview questions based on candidate context.
 
-## Prompt 4: Feedback Generation Logic and API Schema Completion
-Implemented turn counting and automated evaluation logic to generate structured feedback (summary, strengths, gaps, next) when the interview concludes.
+## Prompt 4: Evaluation & Feedback Schema
+Implemented turn tracking and structured JSON output for post-interview evaluation (`summary`, `strengths`, `gaps`, `next`).
 
-## Prompt 5: Next.js Frontend Integration
-Scaffolding a Next.js App Router project with a modern chat interface, session state management, and real-time feedback scorecard rendering.
+## Prompt 5: Next.js Frontend Interface
+Scaffolded a modern Next.js client with candidate selection, real-time chat feed, loading states, and a summary scorecard screen.
