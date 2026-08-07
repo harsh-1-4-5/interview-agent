@@ -3,4 +3,13 @@
 *.pyc
 __pycache__/
 node_modules/
+<<<<<<< HEAD
 .next/
+=======
+.next/
+*.env
+*.env.local
+backend/.env
+backend/.env.local
+
+>>>>>>> dev
