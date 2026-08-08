@@ -44,3 +44,6 @@ Upgraded the application's visual identity by introducing a glassmorphism design
 
 ## Prompt 15: PDF Scorecard Export Feature
 Manually implemented a client-side PDF export feature using `html2pdf.js`. Added a dynamic download function to the Next.js frontend that captures the final Feedback Dashboard DOM element and converts it into a styled, high-resolution PDF scorecard without requiring backend rendering.
+
+## Prompt 16: Sidebar Multi-View Dashboard & Session Telemetry Architecture
+Overhauled the frontend architecture into an enterprise-grade multi-column dashboard inspired by professional developer tools. Replaced top-bar navigation with a fixed left sidebar featuring live-animated branding for "Interview Agent", interactive tabs for Live Interview, Curriculum, and Candidate Dashboard, and a New Interview/Reset action. Integrated a real-time Session Telemetry telemetry panel on the right, added a live motion background, and dynamically mapped curriculum data directly from candidate profiles to resolve build dependencies.
