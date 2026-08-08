@@ -26,13 +26,14 @@ type Feedback = {
   next: string[];
 };
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://interview-agent-api-8x97.onrender.com";
-const API_URL = `${API_BASE_URL}/api/interview`;
+const API_URL = process.env.NEXT_PUBLIC_API_URL
+  ? `${process.env.NEXT_PUBLIC_API_URL}/api/interview`
+  : "https://interview-agent-api-8x97.onrender.com/api/interview";
 
 export default function InterviewApp() {
   const [candidates] = useState(candidatesData.candidates);
   const [selectedCandidateId, setSelectedCandidateId] = useState<string>(candidates[0]?.member.id || "");
-  const [sessionId, setSessionId] = useState<string>("");
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [isStarted, setIsStarted] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [chatHistory, setChatHistory] = useState<Message[]>([]);
@@ -72,8 +73,13 @@ export default function InterviewApp() {
 
       const data = await res.json();
 
-      if (data.error) {
-        setSessionId("");
+      if (!res.ok || data.error) {
+        console.error("Backend error:", data.error || res.statusText);
+        setSessionId(null);
+        setIsLoading(false);
+        setChatHistory([{ id: crypto.randomUUID(), sender: 'ai', text: `⚠️ ${data.reply || 'Server returned an error. Please try again.'}` }]);
+        setIsStarted(true);
+        return;
       }
 
       setChatHistory([
@@ -82,7 +88,9 @@ export default function InterviewApp() {
       setIsStarted(true);
     } catch (error) {
       console.error("Error starting interview:", error);
-      alert("Failed to connect to the backend server. If using the live Render backend, please wait 50 seconds for it to spin up from a cold start and try again.");
+      setSessionId(null);
+      setChatHistory([{ id: crypto.randomUUID(), sender: 'ai', text: '⚠️ Failed to connect to the backend server. If using the live Render backend, please wait ~50 seconds for it to spin up from a cold start and try again.' }]);
+      setIsStarted(true);
     } finally {
       setIsLoading(false);
     }
@@ -114,8 +122,15 @@ export default function InterviewApp() {
 
       const data = await res.json();
 
-      if (data.error) {
-        setSessionId("");
+      if (!res.ok || data.error) {
+        console.error("Backend error:", data.error || res.statusText);
+        setSessionId(null);
+        setIsLoading(false);
+        setChatHistory(prev => [
+          ...prev,
+          { id: crypto.randomUUID(), sender: 'ai', text: `⚠️ ${data.reply || 'Server error. Your session has been reset — please start a new interview.'}` }
+        ]);
+        return;
       }
 
       if (data.done && data.feedback) {
@@ -139,9 +154,10 @@ export default function InterviewApp() {
       }
     } catch (error) {
       console.error("Error sending message:", error);
+      setSessionId(null);
       setChatHistory(prev => [
         ...prev,
-        { id: crypto.randomUUID(), sender: 'ai', text: "Error: Failed to connect to the server. If this is a cold start on Render, it might take ~50 seconds to spin up. Please try again in a moment." }
+        { id: crypto.randomUUID(), sender: 'ai', text: '⚠️ Failed to connect to the server. If this is a cold start on Render, it might take ~50 seconds to spin up. Your session has been reset — please start a new interview.' }
       ]);
     } finally {
       setIsLoading(false);
