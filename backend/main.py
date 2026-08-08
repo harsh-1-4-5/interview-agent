@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from groq import Groq
+import groq
 
 # Ensure the backend directory is in the python path to avoid import errors
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -15,7 +16,7 @@ from data_manager import get_candidate_context
 
 # Robust dotenv loading using an absolute path to the backend directory
 env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env.local")
-load_dotenv(dotenv_path=env_path)
+load_dotenv(dotenv_path=env_path, override=False)
 
 app = FastAPI()
 
@@ -81,7 +82,11 @@ async def interview_endpoint(request: InterviewRequest):
                     max_tokens=1024,
                 )
                 opening_question = response.choices[0].message.content
+            except groq.AuthenticationError as e:
+                print(f"CRITICAL ERROR: Groq Authentication Failed. Invalid API Key. {e}")
+                return {"reply": "Error: Invalid API Key. Please check your backend configuration.", "done": True, "error": True}
             except Exception as e:
+                print(f"ERROR: Failed to reach Groq: {e}")
                 opening_question = f"Mock reply to your answer. (Failed to reach Groq: {str(e)})"
             
             messages.append({"role": "assistant", "content": opening_question})
@@ -134,7 +139,11 @@ You MUST output your evaluation strictly as a valid JSON object matching the fol
                         import json
                         feedback_data = json.loads(llm_response)
                         return feedback_data
+                    except groq.AuthenticationError as e:
+                        print(f"CRITICAL ERROR: Groq Authentication Failed. Invalid API Key. {e}")
+                        return {"reply": "Error: Invalid API Key. Please check your backend configuration.", "done": True, "error": True}
                     except Exception as e:
+                        print(f"ERROR: Failed to reach Groq for feedback: {e}")
                         return {
                             "reply": f"Thank you for completing the interview! (Feedback generation failed: {str(e)})",
                             "done": True
@@ -149,7 +158,11 @@ You MUST output your evaluation strictly as a valid JSON object matching the fol
                         max_tokens=1024,
                     )
                     llm_response = response.choices[0].message.content
+                except groq.AuthenticationError as e:
+                    print(f"CRITICAL ERROR: Groq Authentication Failed. Invalid API Key. {e}")
+                    return {"reply": "Error: Invalid API Key. Please check your backend configuration.", "done": True, "error": True}
                 except Exception as e:
+                    print(f"ERROR: Failed to reach Groq: {e}")
                     llm_response = f"Mock reply to your answer. (Failed to reach Groq: {str(e)})"
                 
                 messages.append({"role": "assistant", "content": llm_response})

@@ -20,3 +20,6 @@ Configured frontend environment variable and API fetch endpoint in `page.tsx` to
 
 ## Prompt 7: Production Backend Endpoint Alignment & Deployment Patch
 Resolved frontend-to-backend connection errors by updating the Next.js API client in `frontend/src/app/page.tsx` to route all `/api/interview` requests to the active Render backend (`https://interview-agent-api-8x97.onrender.com/api/interview`), adding environment variable fallbacks and verifying CORS configuration.
+
+## Prompt 8: Production Environment Variable & API Authentication Fix
+Configured valid GROQ_API_KEY environment variable on Render deployment to resolve HTTP 401 invalid API key exceptions during Groq model invocation.
