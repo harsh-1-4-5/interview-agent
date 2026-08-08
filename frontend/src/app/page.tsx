@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef, useEffect } from "react";
 import { Send, Loader2, TerminalSquare, User, Sparkles } from "lucide-react";
@@ -76,56 +76,72 @@ function MessageRow({ msg }: { msg: Message }) {
 
 // ─── Feedback Section ─────────────────────────────────────────────────────────
 
-function FeedbackSection({ feedback }: { feedback: Feedback }) {
+function FeedbackSection({ feedback, onDownloadPDF }: { feedback: Feedback; onDownloadPDF?: () => void }) {
   const toList = (v: string[] | undefined): string[] =>
     Array.isArray(v) && v.length ? v : ["No data provided"];
 
   return (
-    <div className="w-full rounded-2xl border border-zinc-700/50 bg-zinc-900/60 backdrop-blur p-6 space-y-5">
-      <h2 className="text-xl font-bold text-zinc-100 flex items-center gap-2">
-        <Sparkles className="w-5 h-5 text-indigo-400" /> Interview Complete
-      </h2>
+    <div className="w-full flex flex-col items-center gap-6">
+      {/* This ID targets only the visual feedback content for the PDF, excluding the download button */}
+      <div id="scorecard-dashboard" className="w-full rounded-2xl border border-zinc-700/50 bg-zinc-900/60 backdrop-blur p-8 space-y-6">
+        <h2 className="text-2xl font-bold text-zinc-100 flex items-center gap-2">
+          <Sparkles className="w-6 h-6 text-indigo-400" /> Interview Complete
+        </h2>
 
-      <div>
-        <h3 className="text-sm font-semibold uppercase tracking-widest text-zinc-500 mb-2">Summary</h3>
-        <p className="text-zinc-300 leading-relaxed">{feedback.summary || "No summary available."}</p>
+        <div>
+          <h3 className="text-sm font-semibold uppercase tracking-widest text-zinc-500 mb-2">Summary</h3>
+          <p className="text-zinc-300 leading-relaxed">{feedback.summary || "No summary available."}</p>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold uppercase tracking-widest text-zinc-500 mb-2">Strengths</h3>
+          <ul className="space-y-1">
+            {toList(feedback.strengths).map((s, i) => (
+              <li key={i} className="text-zinc-300 flex gap-2">
+                <span className="text-emerald-400 mt-1">✓</span>
+                <span>{s}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold uppercase tracking-widest text-zinc-500 mb-2">Knowledge Gaps</h3>
+          <ul className="space-y-1">
+            {toList(feedback.gaps).map((g, i) => (
+              <li key={i} className="text-zinc-300 flex gap-2">
+                <span className="text-amber-400 mt-1">→</span>
+                <span>{g}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold uppercase tracking-widest text-zinc-500 mb-2">Next Steps</h3>
+          <ul className="space-y-1">
+            {toList(feedback.next).map((n, i) => (
+              <li key={i} className="text-zinc-300 flex gap-2">
+                <span className="text-indigo-400 mt-1">•</span>
+                <span>{n}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
-      <div>
-        <h3 className="text-sm font-semibold uppercase tracking-widest text-zinc-500 mb-2">Strengths</h3>
-        <ul className="space-y-1">
-          {toList(feedback.strengths).map((s, i) => (
-            <li key={i} className="text-zinc-300 flex gap-2">
-              <span className="text-emerald-400 mt-1">✓</span>
-              <span>{s}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div>
-        <h3 className="text-sm font-semibold uppercase tracking-widest text-zinc-500 mb-2">Knowledge Gaps</h3>
-        <ul className="space-y-1">
-          {toList(feedback.gaps).map((g, i) => (
-            <li key={i} className="text-zinc-300 flex gap-2">
-              <span className="text-amber-400 mt-1">→</span>
-              <span>{g}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div>
-        <h3 className="text-sm font-semibold uppercase tracking-widest text-zinc-500 mb-2">Next Steps</h3>
-        <ul className="space-y-1">
-          {toList(feedback.next).map((n, i) => (
-            <li key={i} className="text-zinc-300 flex gap-2">
-              <span className="text-indigo-400 mt-1">•</span>
-              <span>{n}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {/* PDF Download Button */}
+      {onDownloadPDF && (
+        <button
+          onClick={onDownloadPDF}
+          className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-medium rounded-xl shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:scale-[1.02] transition-all duration-300"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Download Scorecard PDF
+        </button>
+      )}
     </div>
   );
 }
@@ -147,6 +163,25 @@ export default function InterviewApp() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // PDF Download Handler
+  const downloadPDF = async () => {
+    const element = document.getElementById('scorecard-dashboard');
+    if (typeof window !== 'undefined' && element) {
+      // Dynamically import to avoid Next.js SSR window errors
+      const html2pdf = (await import('html2pdf.js')).default;
+
+      const opt = {
+        margin: 0.5,
+        filename: 'Interview_Scorecard.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#09090b' },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(element).save();
+    }
+  };
 
   // Auto-scroll every time messages change
   useEffect(() => {
@@ -299,13 +334,15 @@ export default function InterviewApp() {
 
       {/* ── Chat Scroll Area ── */}
       <div className="flex-1 overflow-y-auto scroll-smooth w-full">
-        {/* Messages column – pb-40 keeps the last message above the fixed input */}
         <div className="w-full max-w-3xl mx-auto flex flex-col gap-8 px-4 py-8 pb-40">
           {chatHistory.map(msg => (
             <MessageRow key={msg.id} msg={msg} />
           ))}
           {isLoading && !isDone && <TypingIndicator />}
-          {isDone && feedback && <FeedbackSection feedback={feedback} />}
+
+          {/* We pass the downloadPDF function down to the Feedback Section */}
+          {isDone && feedback && <FeedbackSection feedback={feedback} onDownloadPDF={downloadPDF} />}
+
           <div ref={messagesEndRef} />
         </div>
       </div>

@@ -41,3 +41,6 @@ Fixed critical CSS flexbox alignment issues where user avatars and text bubbles 
 
 ## Prompt 14: Premium Glassmorphism & Deep Gradient Styling
 Upgraded the application's visual identity by introducing a glassmorphism design system. Implemented dynamic radial background gradients, semi-transparent backdrop-blurred containers, and glowing gradient accents for user messages. Refined the input component with a frosted glass effect and interactive hover states to achieve a top-tier SaaS aesthetic.
+
+## Prompt 15: PDF Scorecard Export Feature
+Manually implemented a client-side PDF export feature using `html2pdf.js`. Added a dynamic download function to the Next.js frontend that captures the final Feedback Dashboard DOM element and converts it into a styled, high-resolution PDF scorecard without requiring backend rendering.
