@@ -17,3 +17,6 @@ Scaffolding a Next.js App Router project with a modern chat interface, session s
 
 ## Prompt 6: Production API URL Configuration & CORS Alignment
 Configured frontend environment variable and API fetch endpoint in `page.tsx` to target the deployed live Render backend (`https://interview-agent-api.onrender.com/api/interview`), enabling production deployment on Vercel.
+
+## Prompt 7: Production Backend Endpoint Alignment & Deployment Patch
+Resolved frontend-to-backend connection errors by updating the Next.js API client in `frontend/src/app/page.tsx` to route all `/api/interview` requests to the active Render backend (`https://interview-agent-api-8x97.onrender.com/api/interview`), adding environment variable fallbacks and verifying CORS configuration.
