@@ -26,6 +26,9 @@ type Feedback = {
   next: string[];
 };
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://interview-agent-api-8x97.onrender.com";
+const API_URL = `${API_BASE_URL}/api/interview`;
+
 export default function InterviewApp() {
   const [candidates] = useState(candidatesData.candidates);
   const [selectedCandidateId, setSelectedCandidateId] = useState<string>(candidates[0]?.member.id || "");
@@ -58,7 +61,7 @@ export default function InterviewApp() {
     const selectedCandidate = candidates.find((c: any) => c.member.id === selectedCandidateId);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/interview", {
+      const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -69,13 +72,17 @@ export default function InterviewApp() {
 
       const data = await res.json();
 
+      if (data.error) {
+        setSessionId("");
+      }
+
       setChatHistory([
         { id: crypto.randomUUID(), sender: 'ai', text: data.reply }
       ]);
       setIsStarted(true);
     } catch (error) {
       console.error("Error starting interview:", error);
-      alert("Failed to connect to the backend server. Make sure FastAPI is running.");
+      alert("Failed to connect to the backend server. If using the live Render backend, please wait 50 seconds for it to spin up from a cold start and try again.");
     } finally {
       setIsLoading(false);
     }
@@ -96,7 +103,7 @@ export default function InterviewApp() {
     setIsLoading(true);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/interview", {
+      const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -106,6 +113,10 @@ export default function InterviewApp() {
       });
 
       const data = await res.json();
+
+      if (data.error) {
+        setSessionId("");
+      }
 
       if (data.done && data.feedback) {
         setChatHistory(prev => [
@@ -130,7 +141,7 @@ export default function InterviewApp() {
       console.error("Error sending message:", error);
       setChatHistory(prev => [
         ...prev,
-        { id: crypto.randomUUID(), sender: 'ai', text: "Error: Failed to get a response from the server." }
+        { id: crypto.randomUUID(), sender: 'ai', text: "Error: Failed to connect to the server. If this is a cold start on Render, it might take ~50 seconds to spin up. Please try again in a moment." }
       ]);
     } finally {
       setIsLoading(false);
@@ -300,8 +311,8 @@ export default function InterviewApp() {
               >
                 <div
                   className={`max-w-[90%] md:max-w-[80%] p-5 rounded-3xl leading-relaxed whitespace-pre-wrap shadow-xl text-[15px] md:text-base ${msg.sender === 'user'
-                      ? 'bg-emerald-600/20 text-emerald-50 border border-emerald-500/30 rounded-br-sm backdrop-blur-md'
-                      : 'bg-indigo-600/20 text-indigo-50 border border-indigo-500/30 rounded-bl-sm backdrop-blur-md'
+                    ? 'bg-emerald-600/20 text-emerald-50 border border-emerald-500/30 rounded-br-sm backdrop-blur-md'
+                    : 'bg-indigo-600/20 text-indigo-50 border border-indigo-500/30 rounded-bl-sm backdrop-blur-md'
                     }`}
                 >
                   {msg.text}

@@ -12,4 +12,8 @@ node_modules/
 backend/.env
 backend/.env.local
 
+<<<<<<< HEAD
 >>>>>>> dev
+=======
+>>>>>>> 8617515 (feat: complete interview agent engine and frontend)
+>>>>>>> 994185b
