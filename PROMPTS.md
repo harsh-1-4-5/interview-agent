@@ -30,5 +30,14 @@ Hardened environment variable loading in `backend/main.py` using `python-dotenv`
 ## Prompt 10: Complete State Recovery & Authentication Overhaul
 Implemented a complete overhaul of the session state logic and Groq initialization. The backend now auto-recovers missing sessions instead of crashing, and initializes the Groq client dynamically per-request to prevent boot failures. The Next.js frontend now features automatic state clearing on API failure, ensuring broken sessions are immediately reset.
 
-## Prompt 12: Feedback Dashboard Rendering & Type Safety Fix
+## Prompt 11: Feedback Dashboard Rendering & Type Safety Fix
 Fixed a silent React rendering failure at the end of the interview by adding bulletproof type checking and optional chaining to the Next.js feedback dashboard. Ensure the UI safely handles strings, arrays, or missing data when the backend returns the final feedback payload.
+
+## Prompt 12: Premium "Global Standard" UI Overhaul & Layout Fix
+Completely redesigned the chat interface to match global SaaS design standards (e.g., Claude/Linear aesthetic). Resolved critical layout bugs where the fixed input container overlapped and obscured the most recent chat messages. Implemented a strict flexbox layout, custom webkit scrollbars, and premium Tailwind typography with max-width constraints for optimal readability.
+
+## Prompt 13: UI Layout Fix & Scrollbar Removal
+Fixed critical CSS flexbox alignment issues where user avatars and text bubbles were detached. Enforced a strict, centered `max-w-3xl` conversation column to match global SaaS standards (e.g., ChatGPT/Claude). Removed native scrollbar artifacts from the input text area and implemented a fixed bottom input container with a gradient fade.
+
+## Prompt 14: Premium Glassmorphism & Deep Gradient Styling
+Upgraded the application's visual identity by introducing a glassmorphism design system. Implemented dynamic radial background gradients, semi-transparent backdrop-blurred containers, and glowing gradient accents for user messages. Refined the input component with a frosted glass effect and interactive hover states to achieve a top-tier SaaS aesthetic.
