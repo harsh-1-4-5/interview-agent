@@ -212,6 +212,8 @@ export default function InterviewApp() {
 
   const renderFeedbackScorecard = () => {
     if (!feedback) return null;
+    const safeList = (items: any) => (Array.isArray(items) ? items : [items || 'No data provided']);
+
     return (
       <div className="w-full max-w-4xl mx-auto space-y-6 mt-12 mb-12">
         <div className="text-center mb-10">
@@ -222,63 +224,71 @@ export default function InterviewApp() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Summary */}
           <div className="col-span-1 md:col-span-2 bg-slate-800/40 backdrop-blur-md border border-slate-700/50 p-6 md:p-8 rounded-3xl shadow-xl">
             <h3 className="flex items-center gap-3 text-2xl font-semibold text-slate-100 mb-5">
               <div className="p-2 bg-blue-500/20 rounded-lg"><FileText className="text-blue-400 w-6 h-6" /></div>
               Summary
             </h3>
-            <p className="text-slate-300 text-lg leading-relaxed">{feedback.summary}</p>
+            <p className="text-slate-300 text-lg leading-relaxed">{feedback.summary || "No summary available."}</p>
           </div>
 
-          {/* Strengths */}
           <div className="bg-slate-800/40 backdrop-blur-md border border-emerald-900/40 p-6 md:p-8 rounded-3xl shadow-xl">
             <h3 className="flex items-center gap-3 text-2xl font-semibold text-emerald-400 mb-6">
               <div className="p-2 bg-emerald-500/20 rounded-lg"><TrendingUp className="w-6 h-6 text-emerald-400" /></div>
               Strengths
             </h3>
-            <ul className="space-y-4">
-              {feedback.strengths.map((s, i) => (
-                <li key={i} className="flex items-start gap-3 text-slate-300">
-                  <CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0 mt-0.5" />
-                  <span className="leading-relaxed">{s}</span>
-                </li>
-              ))}
-            </ul>
+            {Array.isArray(feedback?.strengths) ? (
+              <ul className="space-y-4">
+                {feedback.strengths.map((s, i) => (
+                  <li key={i} className="flex items-start gap-3 text-slate-300">
+                    <CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0 mt-0.5" />
+                    <span className="leading-relaxed">{s}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-slate-300">{feedback?.strengths || 'No data provided'}</p>
+            )}
           </div>
 
-          {/* Gaps */}
           <div className="bg-slate-800/40 backdrop-blur-md border border-rose-900/40 p-6 md:p-8 rounded-3xl shadow-xl">
             <h3 className="flex items-center gap-3 text-2xl font-semibold text-rose-400 mb-6">
               <div className="p-2 bg-rose-500/20 rounded-lg"><AlertTriangle className="w-6 h-6 text-rose-400" /></div>
               Knowledge Gaps
             </h3>
-            <ul className="space-y-4">
-              {feedback.gaps.map((g, i) => (
-                <li key={i} className="flex items-start gap-3 text-slate-300">
-                  <div className="w-6 h-6 rounded-full bg-rose-500/20 flex items-center justify-center shrink-0 mt-0.5">
-                    <div className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-                  </div>
-                  <span className="leading-relaxed">{g}</span>
-                </li>
-              ))}
-            </ul>
+            {Array.isArray(feedback?.gaps) ? (
+              <ul className="space-y-4">
+                {feedback.gaps.map((g, i) => (
+                  <li key={i} className="flex items-start gap-3 text-slate-300">
+                    <div className="w-6 h-6 rounded-full bg-rose-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                    </div>
+                    <span className="leading-relaxed">{g}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-slate-300">{feedback?.gaps || 'No data provided'}</p>
+            )}
           </div>
 
-          {/* Next Steps */}
           <div className="col-span-1 md:col-span-2 bg-slate-800/40 backdrop-blur-md border border-indigo-900/40 p-6 md:p-8 rounded-3xl shadow-xl">
             <h3 className="flex items-center gap-3 text-2xl font-semibold text-indigo-400 mb-6">
               <div className="p-2 bg-indigo-500/20 rounded-lg"><ArrowRight className="w-6 h-6 text-indigo-400" /></div>
               Next Steps
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {feedback.next.map((n, i) => (
-                <div key={i} className="bg-indigo-950/40 border border-indigo-900/50 p-5 rounded-2xl flex items-start gap-4 hover:bg-indigo-950/60 transition-colors">
-                  <div className="text-indigo-400 font-black text-xl mt-0.5">{i + 1}.</div>
-                  <div className="text-slate-300 leading-relaxed">{n}</div>
-                </div>
-              ))}
-            </div>
+            {Array.isArray(feedback?.next) ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {feedback.next.map((n, i) => (
+                  <div key={i} className="bg-indigo-950/40 border border-indigo-900/50 p-5 rounded-2xl flex items-start gap-4 hover:bg-indigo-950/60 transition-colors">
+                    <div className="text-indigo-400 font-black text-xl mt-0.5">{i + 1}.</div>
+                    <div className="text-slate-300 leading-relaxed">{n}</div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-slate-300">{feedback?.next || 'No data provided'}</p>
+            )}
           </div>
         </div>
       </div>
