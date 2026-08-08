@@ -453,7 +453,15 @@ function CurriculumView({ curriculum, candidate }: { curriculum: any; candidate:
             </div>
             <div className="grid gap-2">
               {daysInModule.map((d: any) => {
-                const mission = missionByDay.get(d.day);
+                // Define a type for mission data so TypeScript knows what properties exist
+                type MissionStatus = {
+                  passed?: boolean;
+                  skipped?: boolean;
+                  attempts?: number;
+                };
+
+                // Cast the lookup result explicitly with 'as MissionStatus | undefined'
+                const mission = missionByDay.get(d.day) as MissionStatus | undefined;
                 const StatusIcon = mission?.passed ? CheckCircle2 : mission?.skipped ? XCircle : Circle;
                 const iconTone = mission?.passed
                   ? "text-emerald-400"
